@@ -1,46 +1,13 @@
-
-Element.prototype.addClassName = function(classString) {
-    var oldClassList = this.className.split(' ');
-    if (oldClassList.indexOf(classString) === -1) {
-        // The class is not yet applied
-        oldClassList.push(classString);
-    }
-    this.className = oldClassList.join(' ');
-    return true;
+function qS (selector_str) {
+  return document.querySelector(selector_str);
 };
 
-Element.prototype.removeClassName = function(classString) {
-    var oldClassList = this.className.split(' ');
-    var newClassList = oldClassList.filter(function(i){return (i !== classString)});
-    this.className = newClassList.join(' ');
-    return true
-};
-
-var evtMouseMove = new Event('mousemove');
-var evtMouseOver = new Event('mouseover');
-var evtClick = new Event('click');
-
-var divNetflixPlayer = document.getElementById('netflix-player');
-
-var divControlBar = document.querySelector('#netflix-player > div.player-controls-wrapper.player-active.no-select.opacity-transparent.display-none');
-
-var divEpSelect2 = document.querySelector('div.player-control-button.player-episode-selector.container-icon-player-episode-selector');
-
-function wakeNetflixPlayer() {
-  divNetflixPlayer.dispatchEvent(evtMouseMove);
-};
-
-function wakeNetflixControls() {
-  divControlBar.removeClassName('opacity-transparent');
-  divControlBar.removeClassName('display-none');
-};
-
-function wakeNetflixEpisodes() {
-  divEpSelect2.dispatchEvent(evtMouseOver);
+function qSA (selector_str) {
+  return document.querySelectorAll(selector_str);
 };
 
 function getEpisodeIdsForCurrentSeason(){
-  var epEls = document.querySelectorAll('ul.episode-list>li.episode-list-item');
+  var epEls = qSA('ul.episode-list>li.episode-list-item');
   var epCount = epEls.length;
   var epIDs = [];
   for (var i = 0; i < epCount; i++) {
@@ -51,19 +18,18 @@ function getEpisodeIdsForCurrentSeason(){
 };
 
 function showSeasonList() {
-  var btnBack = document.querySelector('#player-menu-episode-selector > div > div > div.episode-list-container > div > div > button');
+  var btnBack = qS('#player-menu-episode-selector > div > div > div.episode-list-container > div > div > button');
   btnBack.click();
 };
 
 function getSeasonCount() {
   showSeasonList();
-  var seasonLIs = document.querySelectorAll('ul.season-list>li.season');
-  return seasonLIs.length;
+  return qSA('ul.season-list>li.season').length;
 };
 
 function selectSeason(seasonNum) {
   showSeasonList();
-  var seasonLIs = document.querySelectorAll('ul.season-list>li.season');
+  var seasonLIs = qSA('ul.season-list>li.season');
   var selectedLI = seasonLIs[seasonNum];
   selectedLI.click();
   return;
@@ -94,11 +60,5 @@ function shuffleEpisodes() {
   var shufURL = netflixBaseURL + randEpID;
   document.location.assign(shufURL);
 };
-
-
-
-var wakeInterval1 = window.setInterval(wakeNetflixPlayer, 1000);
-var wakeInterval2 = window.setInterval(wakeNetflixControls, 1000);
-var wakeInterval3 = window.setInterval(wakeNetflixEpisodes, 1000);
 
 shuffleEpisodes();
